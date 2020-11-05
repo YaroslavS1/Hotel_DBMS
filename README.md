@@ -1,4 +1,4 @@
 # Hotel_DBMS
 
-#Synopsis
+## Synopsis
 Hotel guests DBMS Mini Project using PyQt, mysql connector
