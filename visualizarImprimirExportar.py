@@ -1,6 +1,7 @@
 __versión__ = "1.0"
 
 from sqlite3 import connect
+import pandas as pd
 
 from PyQt5.QtGui import QIcon, QFont, QTextDocument
 from PyQt5.QtCore import Qt, QFileInfo, QTextCodec, QByteArray, QTranslator, QLocale, QLibraryInfo
@@ -57,7 +58,7 @@ class visualizarImprimirExportar(QDialog):
         buttonImprimir.setFixedSize(140, 26)
         buttonImprimir.move(304, 364)
 
-        buttonExportarPDF = QPushButton("Экспорт в PDF", self)
+        buttonExportarPDF = QPushButton("Экспорт в EXEL", self)
         buttonExportarPDF.setFixedSize(140, 26)
         buttonExportarPDF.move(452, 364)
 
@@ -201,20 +202,27 @@ tr:nth-child(even) {
 
     def exportarPDF(self):
         if not self.documento.isEmpty():
-            nombreArchivo, _ = QFileDialog.getSaveFileName(self, "Экспорт в PDF", "Список пользователей ",
-                                                           "PDF файлы  (*.doc);;All Files (*)",
+            nombreArchivo, _ = QFileDialog.getSaveFileName(self, "Экспорт в EXEL", "Список пользователей ",
+                                                           "EXEL файлы  (*.xlsx);;All Files (*)",
                                                            options=QFileDialog.Options())
+            conexionDB = connect("DB_SIACLE/DB_SIACLE.db")
+            data = pd.read_sql(
+                'SELECT * FROM CLIENTES',
+                conexionDB)
+            conexionDB.close()
 
             if nombreArchivo:
-                impresion = QPrinter(QPrinter.HighResolution)
-                impresion.setOutputFormat(QPrinter.PdfFormat)
-                impresion.setOutputFileName(nombreArchivo)
-                self.documento.print_(impresion)
+                # impresion = QPrinter(QPrinter.HighResolution)
+                # impresion.setOutputFormat(QPrinter.PdfFormat)
+                # impresion.setOutputFileName(nombreArchivo)
+                # self.documento.print_(impresion)
+                # print(nombreArchivo)
+                data.to_excel(f'{nombreArchivo}.xlsx')
 
-                QMessageBox.information(self, "Экспорт в PDF", "Данные успешно экспортированы.   ",
+                QMessageBox.information(self, "Экспорт в EXEL", "Данные успешно экспортированы.   ",
                                         QMessageBox.Ok)
         else:
-            QMessageBox.critical(self, "Экспорт в PDF", "Нет данных для экспорта.   ",
+            QMessageBox.critical(self, "Экспорт в EXEL", "Нет данных для экспорта.   ",
                                  QMessageBox.Ok)
 
 
